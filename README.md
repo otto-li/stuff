@@ -21,9 +21,51 @@ A comprehensive toolkit for generating realistic e-commerce datasets including:
 
 ---
 
+### 🧠 [Model Jobs - MLOps Framework](./model-jobs/)
+A production-ready MLOps framework for machine learning model training, scoring, and deployment in Databricks environments.
+- **Databricks Integration**: Native support for Spark, Delta Lake, and MLflow
+- **Scalable Processing**: Distributed training and batch inference
+- **PyFunc Models**: Simple parameter-based models for demonstrations
+- **Enterprise-Grade**: Widgets, monitoring, and comprehensive logging
+
+**Key Components:**
+- **Training Notebook**: Interactive model training with 10K samples and MLflow tracking
+- **Scoring Notebook**: Distributed batch inference for 50K+ records using Spark UDFs
+- **Delta Lake Storage**: Versioned data with partitioning and optimization
+- **Performance Monitoring**: Real-time throughput and data quality metrics
+
+**Technologies:** Databricks, MLflow, Spark, Delta Lake, Python, PyFunc Models
+
+[➡️ View Model Jobs Documentation](./model-jobs/README.md)
+
+---
+
+## 🎯 Use Cases
+
+### Data Generation & Analytics
+- **E-commerce Analytics**: Generate realistic customer and transaction datasets
+- **A/B Testing**: Create synthetic user behavior data for experimentation
+- **Data Pipeline Testing**: Validate ETL processes with known data patterns
+
+### MLOps & Machine Learning
+- **Model Training**: End-to-end ML training workflows with experiment tracking
+- **Batch Scoring**: Scalable inference pipelines for large datasets  
+- **Model Monitoring**: Production-grade monitoring and quality assurance
+- **Databricks Deployment**: Ready-to-use notebooks for cloud ML platforms
+
 ## 🚀 Quick Start
 
-Each project has its own documentation and setup instructions. Navigate to the specific project folder for detailed information.
+Each project has its own documentation and setup instructions:
+
+1. **For E-commerce Data**: Navigate to \`./ecommerce-data-generator/\` and follow the setup guide
+2. **For MLOps Framework**: Navigate to \`./model-jobs/\` and import notebooks to Databricks
+
+## 🛠️ Technologies Used
+
+| Project | Technologies |
+|---------|-------------|
+| **E-commerce Data Generator** | Python, Mimesis, Pandas, Git |
+| **Model Jobs (MLOps)** | Databricks, MLflow, Spark, Delta Lake, PyFunc |
 
 ## 🤝 Contributing
 
