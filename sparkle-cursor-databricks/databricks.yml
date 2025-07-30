@@ -1,0 +1,27 @@
+display_name: "✨ Sparkle Cursor - Magical Mouse Effects"
+description: "A delightful Databricks App that transforms your mouse cursor into a magical sparkle-shooting experience!"
+
+resources:
+  apps:
+    sparkle_cursor_app:
+      name: "sparkle-cursor-app"
+      description: "Interactive sparkle cursor web application"
+      source_code_path: "./src"
+      
+targets:
+  dev:
+    default: true
+    workspace:
+      host: "{{workspace.host}}"
+    resources:
+      apps:
+        sparkle_cursor_app:
+          name: "sparkle-cursor-dev"
+          
+  prod:
+    workspace:
+      host: "{{workspace.host}}"
+    resources:
+      apps:
+        sparkle_cursor_app:
+          name: "sparkle-cursor-prod"
