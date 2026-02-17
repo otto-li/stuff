@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advertiser Segment Builder</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>📊 Advertiser Segment Builder</h1>
+            <p class="subtitle">Create targeted audience segments and predict performance</p>
+        </header>
+
+        <!-- Segment Builder -->
+        <section class="builder-section">
+            <h2>Build Your Segment</h2>
+            
+            <div class="form-grid">
+                <!-- Segment Name -->
+                <div class="form-group full-width">
+                    <label for="segment-name">Segment Name</label>
+                    <input type="text" id="segment-name" placeholder="e.g., Tech-Savvy Millennials" required>
+                </div>
+
+                <!-- Age Bands -->
+                <div class="form-group">
+                    <label>Age Bands</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="18-24"> 18-24
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="25-34"> 25-34
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="35-44"> 35-44
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="45-54"> 45-54
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="55+"> 55+
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Demographics -->
+                <div class="form-group">
+                    <label>Demographics</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="Urban"> Urban
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="Suburban"> Suburban
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="Rural"> Rural
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="High Income"> High Income
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="College Educated"> College Educated
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Locations -->
+                <div class="form-group">
+                    <label>Target Locations</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="United States"> United States
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="Canada"> Canada
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="United Kingdom"> United Kingdom
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="Europe"> Europe
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="Asia Pacific"> Asia Pacific
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Interests -->
+                <div class="form-group">
+                    <label>Interests</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="Technology"> Technology
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="Sports"> Sports
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="Travel"> Travel
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="Fashion"> Fashion
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="Food & Dining"> Food & Dining
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="Entertainment"> Entertainment
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Min Engagement -->
+                <div class="form-group full-width">
+                    <label for="min-engagement">Minimum Engagement (minutes/day)</label>
+                    <input type="number" id="min-engagement" value="0" min="0" step="0.5">
+                </div>
+            </div>
+
+            <button class="btn-primary" id="create-segment-btn">
+                Create Segment & View Analytics
+            </button>
+
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Creating segment and generating analytics...</p>
+            </div>
+        </section>
+
+        <!-- Analytics Dashboard -->
+        <section class="analytics-section" id="analytics-section" style="display: none;">
+            <h2>📈 Segment Analytics</h2>
+            
+            <div class="segment-info" id="segment-info"></div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h3>Previous Month</h3>
+                    <div class="metric-value" id="prev-impressions">-</div>
+                    <div class="metric-label">Total Impressions</div>
+                </div>
+                <div class="metric-card">
+                    <h3>Predicted Next Month</h3>
+                    <div class="metric-value" id="pred-impressions">-</div>
+                    <div class="metric-label">Estimated Impressions</div>
+                </div>
+                <div class="metric-card">
+                    <h3>Engagement</h3>
+                    <div class="metric-value" id="avg-minutes">-</div>
+                    <div class="metric-label">Avg. Minutes/Day</div>
+                </div>
+                <div class="metric-card">
+                    <h3>Estimated Reach</h3>
+                    <div class="metric-value" id="estimated-reach">-</div>
+                    <div class="metric-label">Unique Users</div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3>Impressions Trend</h3>
+                    <canvas id="impressions-chart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Engagement Minutes</h3>
+                    <canvas id="minutes-chart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Device Distribution</h3>
+                    <canvas id="devices-chart"></canvas>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

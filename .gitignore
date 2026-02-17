@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# uv
+uv.lock
+.python-version
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Databricks
+.databricks/
+
+# Build
+*.pyc
+*.pyo
+build/
+dist/
+*.egg-info/

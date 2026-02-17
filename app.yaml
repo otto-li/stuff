@@ -1,0 +1,24 @@
+command:
+  - "python"
+  - "-m"
+  - "uvicorn"
+  - "app:app"
+  - "--host"
+  - "0.0.0.0"
+  - "--port"
+  - "8000"
+
+env:
+  # Lakebase connection (auto-populated when resource added)
+  - name: PGHOST
+    valueFrom: database
+  - name: PGPORT
+    valueFrom: database
+  - name: PGDATABASE
+    valueFrom: database
+  - name: PGUSER
+    valueFrom: database
+
+  # Foundation Model endpoint for predictions
+  - name: SERVING_ENDPOINT
+    value: databricks-claude-sonnet-4-5
