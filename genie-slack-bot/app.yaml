@@ -1,0 +1,11 @@
+command:
+  - "python"
+  - "app.py"
+
+env:
+  - name: GENIE_SPACE_ID
+    value: "01f0848eb01b1e7ea0f77bdccc4bf6e6"
+  - name: SLACK_BOT_TOKEN
+    valueFrom: genie-slack-bot-token
+  - name: SLACK_APP_TOKEN
+    valueFrom: genie-slack-app-token

@@ -1,0 +1,21 @@
+command:
+  - "python"
+  - "-m"
+  - "uvicorn"
+  - "app:app"
+  - "--host"
+  - "0.0.0.0"
+  - "--port"
+  - "8000"
+
+env:
+  - name: ZEROBUS_TABLE_NAME
+    value: ol.snap.game_events
+  - name: DATABRICKS_WAREHOUSE_ID
+    value: 3baa12157046a0c0
+  - name: ZEROBUS_HOST
+    value: https://2198414303818321.zerobus.us-east-1.cloud.databricks.com
+  - name: ZEROBUS_CLIENT_ID
+    value_from: zerobus-client-id
+  - name: ZEROBUS_CLIENT_SECRET
+    value_from: zerobus-client-secret

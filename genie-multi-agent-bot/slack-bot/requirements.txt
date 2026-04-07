@@ -1,0 +1,6 @@
+databricks-sdk>=0.30.0
+openai>=1.0.0
+slack-bolt>=1.18.0
+slack-sdk>=3.27.0
+python-dotenv>=1.0.0
+flask>=3.0.0

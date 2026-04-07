@@ -1,0 +1,11 @@
+command:
+  - "python"
+  - "app.py"
+
+env:
+  - name: MAS_ENDPOINT_NAME
+    value: "pokemon-tcg-live-mas"
+  - name: SLACK_BOT_TOKEN
+    valueFrom: pokemon-tcg-slack-bot-token
+  - name: SLACK_APP_TOKEN
+    valueFrom: pokemon-tcg-slack-app-token

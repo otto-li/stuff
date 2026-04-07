@@ -1,0 +1,119 @@
+bundle:
+  name: seconddinner_serving_core
+
+workspace:
+  host: https://fe-vm-otto-demo.cloud.databricks.com
+  root_path: /Users/otto.li@databricks.com/.bundle/${bundle.name}/${bundle.target}
+
+variables:
+  catalog:
+    default: otto_demo
+  schema:
+    default: snap_synergy
+
+resources:
+  # ── ML Pipeline: data → models → serving infrastructure ─────────────
+  jobs:
+    snap_synergy_pipeline:
+      name: "[${bundle.target}] Snap Synergy - ML Pipeline"
+      description: >
+        Full card synergy pipeline: card data generation → embeddings →
+        K-means training → batch inference → online store → serving
+        endpoint → vector search → streaming setup.
+
+      tasks:
+        # Step 1: Generate ~200 Marvel Snap card dataset
+        - task_key: generate_card_data
+          description: "Generate Marvel Snap card dataset with features and tags"
+          spark_python_task:
+            python_file: ${workspace.file_path}/notebooks/01_generate_card_data.py
+            source: WORKSPACE
+          environment_key: ml_env
+
+        # Step 2: Compute ability text embeddings
+        - task_key: compute_embeddings
+          description: "Generate embeddings for card ability text via Foundation Model"
+          depends_on:
+            - task_key: generate_card_data
+          spark_python_task:
+            python_file: ${workspace.file_path}/notebooks/02_compute_embeddings.py
+            source: WORKSPACE
+          environment_key: ml_env
+
+        # Step 3: Train K-means clustering model
+        - task_key: train_kmeans
+          description: "Train K-means card clusterer, log to MLflow with centroids table"
+          depends_on:
+            - task_key: generate_card_data
+          spark_python_task:
+            python_file: ${workspace.file_path}/notebooks/03_train_kmeans.py
+            source: WORKSPACE
+          environment_key: ml_env
+
+        # Step 4: Batch inference — score all card pairs
+        - task_key: batch_inference
+          description: "Pre-compute synergy scores for all card pairs"
+          depends_on:
+            - task_key: train_kmeans
+          spark_python_task:
+            python_file: ${workspace.file_path}/notebooks/04_batch_inference.py
+            source: WORKSPACE
+          environment_key: ml_env
+
+        # Step 4b: rETL batch scores to Lakebase for low-latency queries
+        - task_key: setup_batch_online
+          description: "Sync batch synergy scores to Lakebase (rETL) for sub-ms lookups"
+          depends_on:
+            - task_key: batch_inference
+          spark_python_task:
+            python_file: ${workspace.file_path}/notebooks/04b_setup_batch_online.py
+            source: WORKSPACE
+          environment_key: ml_env
+
+        # Step 5: Lakebase online table for feature serving
+        - task_key: setup_online_store
+          description: "Create Lakebase synced table for sub-ms card feature lookup"
+          depends_on:
+            - task_key: generate_card_data
+          spark_python_task:
+            python_file: ${workspace.file_path}/notebooks/05_setup_online_store.py
+            source: WORKSPACE
+          environment_key: ml_env
+
+        # Step 6: Deploy K-means model serving endpoint
+        - task_key: create_serving_endpoint
+          description: "Deploy K-means model to real-time serving endpoint"
+          depends_on:
+            - task_key: train_kmeans
+          spark_python_task:
+            python_file: ${workspace.file_path}/notebooks/06_create_serving_endpoint.py
+            source: WORKSPACE
+          environment_key: ml_env
+
+        # Step 7: Set up Vector Search index
+        - task_key: setup_vector_search
+          description: "Create Vector Search endpoint and Delta Sync index on card embeddings"
+          depends_on:
+            - task_key: compute_embeddings
+          spark_python_task:
+            python_file: ${workspace.file_path}/notebooks/07_setup_vector_search.py
+            source: WORKSPACE
+          environment_key: ml_env
+
+
+      environments:
+        - environment_key: ml_env
+          spec:
+            client: "4"
+
+      email_notifications:
+        on_failure:
+          - otto.li@databricks.com
+
+targets:
+  development:
+    mode: development
+    default: true
+
+  production:
+    mode: production

@@ -1,0 +1,46 @@
+bundle:
+  name: genie_slack_bot
+
+sync:
+  exclude:
+    - .venv/
+    - __pycache__/
+    - "**/__pycache__/"
+    - "*.pyc"
+    - .git/
+    - .env
+
+workspace:
+  host: https://fe-vm-otto-demo.cloud.databricks.com
+  profile: fe-vm-otto-demo
+
+resources:
+  apps:
+    genie-slack-bot:
+      name: genie-slack-bot
+      description: >-
+        Genie Slack Bot — ask natural-language data questions in Slack,
+        powered by Databricks Genie AI/BI.
+      source_code_path: .
+      resources:
+        - name: genie-slack-bot-token
+          secret:
+            scope: genie-slack-bot
+            key: slack-bot-token
+            permission: READ
+        - name: genie-slack-app-token
+          secret:
+            scope: genie-slack-bot
+            key: slack-app-token
+            permission: READ
+      config:
+        command:
+          - "python"
+          - "app.py"
+        env:
+          - name: GENIE_SPACE_ID
+            value: "01f0848eb01b1e7ea0f77bdccc4bf6e6"
+          - name: SLACK_BOT_TOKEN
+            value_from: genie-slack-bot-token
+          - name: SLACK_APP_TOKEN
+            value_from: genie-slack-app-token

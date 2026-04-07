@@ -1,0 +1,88 @@
+bundle:
+  name: bot_detection_demo
+
+workspace:
+  host: https://fe-vm-otto-demo.cloud.databricks.com
+  root_path: /Users/otto.li@databricks.com/.bundle/${bundle.name}/${bundle.target}
+
+variables:
+  catalog:
+    default: otto_demo
+  schema:
+    default: bot_detection
+
+resources:
+  # ── ML Training + Feature Store Pipeline ─────────────────────────────
+  jobs:
+    bot_detection_pipeline:
+      name: "[${bundle.target}] Bot Detection - ML Pipeline"
+      description: >
+        Full bot detection ML lifecycle: data generation → feature
+        engineering → model training → online feature store → serving endpoint.
+
+      tasks:
+        # Step 1: Generate 500K synthetic bot/human web sessions
+        - task_key: generate_data
+          description: "Generate 500K synthetic bot/human web sessions via dbldatagen"
+          spark_python_task:
+            python_file: ${workspace.file_path}/src/01_generate_data.py
+            source: WORKSPACE
+          environment_key: ml_env
+
+        # Step 2: Compute 20+ behavioral features; enable CDF for online sync
+        - task_key: feature_engineering
+          description: "Compute behavioral features; enable Change Data Feed"
+          depends_on:
+            - task_key: generate_data
+          spark_python_task:
+            python_file: ${workspace.file_path}/src/02_feature_engineering.py
+            source: WORKSPACE
+          environment_key: ml_env
+
+        # Step 3: Train XGBoost; register in MLflow Unity Catalog (runs in parallel with step 4)
+        - task_key: train_model
+          description: "Train XGBoost bot detector; register in MLflow UC registry"
+          depends_on:
+            - task_key: feature_engineering
+          spark_python_task:
+            python_file: ${workspace.file_path}/src/03_train_model.py
+            source: WORKSPACE
+          environment_key: ml_env
+
+        # Step 4: Create Lakebase-backed online table (runs in parallel with step 3)
+        - task_key: setup_online_store
+          description: "Create Lakebase online table for sub-millisecond feature lookup"
+          depends_on:
+            - task_key: feature_engineering
+          spark_python_task:
+            python_file: ${workspace.file_path}/src/04_setup_online_store.py
+            source: WORKSPACE
+          environment_key: ml_env
+
+        # Step 5: Deploy model serving endpoint (after model is registered)
+        - task_key: create_serving_endpoint
+          description: "Deploy model serving REST endpoint for real-time bot scoring"
+          depends_on:
+            - task_key: train_model
+            - task_key: setup_online_store
+          spark_python_task:
+            python_file: ${workspace.file_path}/src/05_create_serving_endpoint.py
+            source: WORKSPACE
+          environment_key: ml_env
+
+      environments:
+        - environment_key: ml_env
+          spec:
+            client: "4"  # Python 3.12 — serverless environment version 4
+
+      email_notifications:
+        on_failure:
+          - otto.li@databricks.com
+
+targets:
+  development:
+    mode: development
+    default: true
+
+  production:
+    mode: production

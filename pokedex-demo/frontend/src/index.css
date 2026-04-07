@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-950 text-white;
+    font-family: "Courier New", monospace;
+  }
+}
+
+/* Pixel border effect */
+.pixel-border {
+  box-shadow:
+    0 0 0 3px #000,
+    0 0 0 6px #444,
+    0 0 0 9px #000;
+}
+
+/* Type badge glow */
+.type-badge {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Stat bar animation */
+.stat-bar-fill {
+  animation: fillBar 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fillBar {
+  from { width: 0%; }
+  to { width: var(--bar-width); }
+}
+
+/* CRT scanline overlay */
+.crt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Pokéball spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.pokeball-spin {
+  animation: spin 0.8s linear infinite;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #1a1a2e; }
+::-webkit-scrollbar-thumb { background: #CC0000; border-radius: 3px; }

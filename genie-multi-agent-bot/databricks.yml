@@ -1,0 +1,58 @@
+bundle:
+  name: pokemon-tcg-genie
+
+workspace:
+  host: https://fe-vm-otto-demo.cloud.databricks.com
+  profile: fe-vm-otto-demo
+
+variables:
+  serving_endpoint_name:
+    description: "Name of the MAS serving endpoint for Pokémon TCG Live Genie agents"
+    default: "pokemon-tcg-live-mas"
+  resource_name_suffix:
+    description: "Suffix for resource names"
+    default: "pokemon-tcg"
+
+resources:
+  apps:
+    pokemon_tcg_genie:
+      name: pokemon-tcg-genie-${var.resource_name_suffix}
+      description: "Pokémon TCG Live — Multi-Agent Genie Supervisor chat interface"
+      source_code_path: .
+      resources:
+        - name: serving-endpoint
+          description: "MAS endpoint orchestrating Player Accounts, Next Best Action, and Activities Genie spaces"
+          serving_endpoint:
+            name: ${var.serving_endpoint_name}
+            permission: CAN_QUERY
+        # NOTE: Add underlying Genie agent endpoints here after creating them in Agent Bricks.
+        # Each sub-agent needs CAN_QUERY permission for the app service principal.
+        # - name: genie-player-accounts
+        #   serving_endpoint:
+        #     name: <player-accounts-agent-endpoint>
+        #     permission: CAN_QUERY
+        # - name: genie-player-nba
+        #   serving_endpoint:
+        #     name: <player-nba-agent-endpoint>
+        #     permission: CAN_QUERY
+        # - name: genie-player-activities
+        #   serving_endpoint:
+        #     name: <player-activities-agent-endpoint>
+        #     permission: CAN_QUERY
+
+targets:
+  dev:
+    mode: development
+    default: true
+    variables:
+      resource_name_suffix: dev-${workspace.current_user.domain_friendly_name}
+
+  staging:
+    mode: production
+    variables:
+      resource_name_suffix: "staging"
+
+  prod:
+    mode: production
+    variables:
+      resource_name_suffix: "prod"

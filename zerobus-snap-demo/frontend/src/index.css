@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #050510;
+    color: #ffffff;
+    font-family: "Orbitron", sans-serif;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0a1a;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1a1a3a;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply bg-panel border border-border rounded-lg p-4;
+  }
+
+  .panel-title {
+    @apply text-xs font-black tracking-[0.3em] text-text-dim uppercase mb-3;
+  }
+
+  .btn {
+    @apply px-4 py-2 rounded text-xs font-black tracking-widest transition-all duration-150 cursor-pointer border;
+  }
+
+  .btn-cyan {
+    @apply btn border-cyan text-cyan hover:bg-cyan/10 hover:shadow-neon-cyan active:scale-95;
+  }
+
+  .btn-gold {
+    @apply btn border-gold text-gold hover:bg-gold/10 hover:shadow-neon-gold active:scale-95;
+  }
+
+  .btn-green {
+    @apply btn border-neon-green text-neon-green hover:bg-neon-green/10 hover:shadow-neon-green active:scale-95;
+  }
+
+  .btn-red {
+    @apply btn border-neon-red text-neon-red hover:bg-neon-red/10 hover:shadow-neon-red active:scale-95;
+  }
+
+  .btn-purple {
+    @apply btn border-neon-purple text-neon-purple hover:bg-neon-purple/10 hover:shadow-neon-purple active:scale-95;
+  }
+
+  .btn-disabled {
+    @apply opacity-30 cursor-not-allowed pointer-events-none;
+  }
+
+  .neon-text-cyan {
+    text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff60;
+  }
+
+  .neon-text-gold {
+    text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd70060;
+  }
+
+  .neon-text-green {
+    text-shadow: 0 0 10px #00ff88, 0 0 20px #00ff8860;
+  }
+
+  .neon-text-red {
+    text-shadow: 0 0 10px #ff4444, 0 0 20px #ff444460;
+  }
+
+  .neon-text-purple {
+    text-shadow: 0 0 10px #a855f7, 0 0 20px #a855f760;
+  }
+
+  .stat-box {
+    @apply bg-panel-light rounded p-3 text-center border border-border;
+  }
+
+  .stat-value {
+    @apply text-2xl font-black tabular-nums;
+  }
+
+  .stat-label {
+    @apply text-[9px] tracking-[0.2em] text-text-dim mt-1;
+  }
+}
+
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Slide-in animation for new log entries */
+@keyframes slideInTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideInTop 0.25s ease-out;
+}
+
+/* Pulsing kill indicator */
+@keyframes killPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.animate-kill-pulse {
+  animation: killPulse 0.8s ease-in-out infinite;
+}

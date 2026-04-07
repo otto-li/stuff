@@ -1,0 +1,59 @@
+bundle:
+  name: zerobus_snap_demo
+
+sync:
+  exclude:
+    - .venv/
+    - __pycache__/
+    - "**/__pycache__/"
+    - "*.pyc"
+    - frontend/node_modules/
+    - frontend/.vite/
+    - .git/
+
+workspace:
+  host: https://fe-vm-otto-demo.cloud.databricks.com
+  profile: fe-vm-otto-demo
+
+resources:
+  apps:
+    zerobus-snap-demo:
+      name: zerobus-snap-demo
+      description: >-
+        Zerobus Ingest Demo — Marvel Snap themed interactive app showing
+        real-time event ingestion, crash recovery, and durability proof.
+      source_code_path: .
+      # Zerobus ingest SP credentials (c7095d9c) — used by the SDK for M2M OAuth.
+      # The app SP (DATABRICKS_CLIENT_ID/SECRET auto-injected) lacks Zerobus RAR scope.
+      resources:
+        - name: zerobus-client-id
+          secret:
+            scope: zerobus-demo
+            key: zerobus-sp-client-id
+            permission: READ
+        - name: zerobus-client-secret
+          secret:
+            scope: zerobus-demo
+            key: zerobus-sp-secret
+            permission: READ
+      config:
+        command:
+          - "python"
+          - "-m"
+          - "uvicorn"
+          - "app:app"
+          - "--host"
+          - "0.0.0.0"
+          - "--port"
+          - "8000"
+        env:
+          - name: ZEROBUS_TABLE_NAME
+            value: ol.snap.game_events
+          - name: DATABRICKS_WAREHOUSE_ID
+            value: 3baa12157046a0c0
+          - name: ZEROBUS_HOST
+            value: https://2198414303818321.zerobus.us-east-1.cloud.databricks.com
+          - name: ZEROBUS_CLIENT_ID
+            value_from: zerobus-client-id
+          - name: ZEROBUS_CLIENT_SECRET
+            value_from: zerobus-client-secret

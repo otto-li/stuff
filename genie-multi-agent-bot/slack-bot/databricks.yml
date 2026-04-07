@@ -1,0 +1,50 @@
+bundle:
+  name: pokemon_tcg_slack_bot
+
+sync:
+  exclude:
+    - .venv/
+    - __pycache__/
+    - "**/__pycache__/"
+    - "*.pyc"
+    - .git/
+    - .env
+
+workspace:
+  host: https://fe-vm-otto-demo.cloud.databricks.com
+  profile: fe-vm-otto-demo
+
+resources:
+  apps:
+    pokemon-tcg-slack-bot:
+      name: pokemon-tcg-slack-bot
+      description: >-
+        Pokémon TCG Live Slack Bot — ask natural-language data questions in Slack,
+        powered by a Multi-Agent Supervisor with Genie AI/BI spaces.
+      source_code_path: .
+      resources:
+        - name: pokemon-tcg-slack-bot-token
+          secret:
+            scope: pokemon-tcg-slack-bot
+            key: slack-bot-token
+            permission: READ
+        - name: pokemon-tcg-slack-app-token
+          secret:
+            scope: pokemon-tcg-slack-bot
+            key: slack-app-token
+            permission: READ
+        - name: mas-endpoint
+          serving_endpoint:
+            name: pokemon-tcg-live-mas
+            permission: CAN_QUERY
+      config:
+        command:
+          - "python"
+          - "app.py"
+        env:
+          - name: MAS_ENDPOINT_NAME
+            value: "pokemon-tcg-live-mas"
+          - name: SLACK_BOT_TOKEN
+            value_from: pokemon-tcg-slack-bot-token
+          - name: SLACK_APP_TOKEN
+            value_from: pokemon-tcg-slack-app-token
